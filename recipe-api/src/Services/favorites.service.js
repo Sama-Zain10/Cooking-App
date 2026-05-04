@@ -25,3 +25,19 @@ export const getMyFavorites = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 };
+export const deleteFromFavorites = async (req, res) => {
+  try {
+    const deleted = await Favorite.findOneAndDelete({
+      userId: req.userId,
+      recipeId: req.params.recipeId
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Favorite not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Removed from favorites" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};

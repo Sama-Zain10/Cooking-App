@@ -1,18 +1,19 @@
 <div class="recipe-card" (click)="openDetails()">
   <div class="image-wrapper">
-    <img 
+     <img 
       [src]="recipe.image" 
       [alt]="recipe.title"
       [attr.title]="recipe.title"
       title="Recipe Image"
       loading="lazy"
       class="recipe-image"
+    />class="recipe-image"
     />
     <button 
       class="favorite-btn" 
       (click)="addtoFavourites($event)"
-      [attr.title]="isFav ? 'Remove from favorites' : 'Add to favorites'">
-      {{ isFav ? '❤️' : '🤍' }}
+      [attr.title]="isFav() ? 'Remove from favorites' : 'Add to favorites'">
+      {{ isFav() ? '❤️' : '🤍' }}
     </button>
   </div>
   <div class="recipe-info">

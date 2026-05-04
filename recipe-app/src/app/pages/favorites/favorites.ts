@@ -25,8 +25,10 @@ export class Favorites implements OnInit {
   loadFavorites(): void {
     this.loading = true;
     this.favoriteService.loadFavorites();
-        setTimeout(() => {
+    
+    // الأفضل ننتظر ثواني بسيطة للتأكد من وصول الداتا
+    setTimeout(() => {
       this.loading = false;
-    }, 500);
+    }, 600);
   }
 }

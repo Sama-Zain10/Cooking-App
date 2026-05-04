@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'; 
 import { Recipe } from '../../models/recipe.model';
@@ -20,11 +20,12 @@ export class RecipeCard {
   favoriteService = inject(FavoritesService);
   shoppingService = inject(ShoppingListService);
 
-  get isFav(): boolean {
-    // نستخدم المعرف المتاح سواء id أو _id
-    const id = this.recipe.id || this.recipe.id || '';
+  // استخدام computed لمراقبة التغيير في الـ Signal فوراً
+  isFav = computed(() => {
+    if (!this.recipe) return false;
+    const id = this.recipe.id || (this.recipe as any).recipeId;
     return this.favoriteService.isFavorite(id);
-  }
+  });
 
   addtoFavourites(event: Event): void {
     event.stopPropagation(); 
@@ -34,18 +35,18 @@ export class RecipeCard {
   }
 
   openDetails(): void {
-    this.dialog.open(RecipeDetails, {
-      data: { recipeId: this.recipe.id || this.recipe.id },
-      width: '600px',
-      panelClass: 'recipe-dialog-container' // تقدري تستخدمي الكلاس ده في الـ CSS
-    });
-  }
+  const id = this.recipe.id || (this.recipe as any).recipeId; 
+  this.dialog.open(RecipeDetails, {
+    data: { recipeId: id },
+    width: '600px',
+    panelClass: 'recipe-dialog-container'
+  });
+}
 
   addToShoppingList(event: Event): void {
     event.stopPropagation(); 
     if (this.recipe.ingredients && this.recipe.ingredients.length > 0) {
       this.shoppingService.addItems(this.recipe.ingredients);
-      // alert('Ingredients added! 🛒'); // اختياري
     }
   }
 }

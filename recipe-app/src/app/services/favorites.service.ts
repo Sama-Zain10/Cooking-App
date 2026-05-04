@@ -1,42 +1,55 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Recipe } from '../models/recipe.model';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoritesService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/favorites`;
+  private apiUrl = 'http://localhost:5000/api/favorites'; 
 
-  favs = signal<Recipe[]>([]);
+  favs = signal<any[]>([]);
 
   loadFavorites() {
-    const token = localStorage.getItem('user');
-    if (!token) {
-      this.favs.set([]); 
-      return;
-    }
-
-    this.http.get<{success: boolean, data: Recipe[]}>(this.apiUrl).subscribe({
+    this.http.get<any>(this.apiUrl).subscribe({
       next: (res) => {
-        this.favs.set(res.data || []);
+        const favoritesArray = res.data || res; 
+        this.favs.set(favoritesArray);
       },
-      error: (err) => {
-        console.error('Error loading favorites', err);
-        this.favs.set([]);
-      }
+      error: (err) => console.error('Error loading favorites', err)
     });
   }
 
   toggleFavorite(recipe: Recipe) {
-    this.http.post(this.apiUrl, recipe).subscribe({
-      next: () => this.loadFavorites() 
-    });
+    const recipeId = String(recipe.id || (recipe as any).recipeId);
+
+    console.log('recipe object:', recipe);
+    console.log('recipeId to use:', recipeId);
+
+    if (this.isFavorite(recipeId)) {
+      this.http.delete(`${this.apiUrl}/${recipeId}`).subscribe({
+        next: () => this.loadFavorites(),
+        error: (err) => console.error('Error deleting favorite', err)
+      });
+    } else {
+      const dataToSend = {
+        recipeId: recipeId,
+        title: recipe.title,
+        image: recipe.image
+      };
+      this.http.post(this.apiUrl, dataToSend).subscribe({
+        next: () => this.loadFavorites(),
+        error: (err) => console.error('Error adding favorite', err)
+      });
+    }
   }
-  isFavorite(id: string | number): boolean {
-    return this.favs().some(r => r.id == id || r.id == id);
+
+  isFavorite(id: any): boolean {
+    const searchId = String(id);
+    return this.favs().some(r => 
+      String(r.recipeId) === searchId || String(r.id) === searchId
+    );
   }
 
   clearFavorites() {

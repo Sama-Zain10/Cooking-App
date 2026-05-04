@@ -15,24 +15,21 @@ export class ShoppingListService {
   readonly itemCount = computed(() => this.cartIngredients().length);
   readonly isEmpty = computed(() => this.cartIngredients().length === 0);
 
-  loadMyList(): void {
-    const token = localStorage.getItem('user');
-    if (!token) {
-      this.cartIngredients.set([]);
-      return;
+loadMyList() {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  const headers = { 'Authorization': `Bearer ${token}` };
+
+  this.http.get<{success: boolean, data: any[]}>(this.apiUrl, { headers }).subscribe({
+    next: (res) => {
+      this.cartIngredients.set(res.data || []);
+    },
+    error: (err) => {
+      console.error('Error loading shopping list:', err);
     }
-
-    this.http.get<any>(this.apiUrl).subscribe({
-      next: (res) => {
-        this.cartIngredients.set(res.ingredients || []);
-      },
-      error: (err) => {
-        console.error('Error loading shopping list:', err);
-        this.cartIngredients.set([]);
-      }
-    });
-  }
-
+  });
+}
   addItems(ingredients: Ingredient[]): void {
     const updatedList = [...this.cartIngredients(), ...ingredients];
     this.http.post(this.apiUrl, { ingredients: updatedList }).subscribe({

@@ -1,13 +1,20 @@
-<div class="favorites-container">
-  <h1>My Favorites ({{ favoritesCount() }})</h1>
+<div class="page-container">
+  <div class="page-header">
+    <h1>My Favorites</h1>
+    <p>{{ favoritesCount() }} recipes saved ❤️</p>
+  </div>
 
-  <div *ngIf="loading">Loading your favorites...</div>
+  <div class="content-body">
+    <div *ngIf="loading" class="loader">Loading your favorites...</div>
 
-  <div *ngIf="!loading">
-    <app-recipe-grid [recipes]="recipes()"></app-recipe-grid>
-    
-    <div *ngIf="recipes().length === 0" class="empty-state">
-      You haven't added any favorites yet! ❤️
+    <div *ngIf="!loading">
+      <app-recipe-grid *ngIf="recipes().length > 0" [recipes]="recipes()"></app-recipe-grid>
+      
+      <div *ngIf="recipes().length === 0" class="empty-state">
+        <div class="empty-icon">❤️</div>
+        <h2>Your favorites list is empty</h2>
+        <p>Start exploring and save your best recipes!</p>
+      </div>
     </div>
   </div>
 </div>

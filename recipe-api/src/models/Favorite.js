@@ -8,7 +8,7 @@ const favoriteSchema = new mongoose.Schema(
       required: true,
     },
     recipeId: {
-      type: Number,
+      type: String,
       required: true,
     },
     title: {

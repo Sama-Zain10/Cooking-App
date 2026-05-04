@@ -1,10 +1,10 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed, inject, Injector, runInInjectionContext } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { FavoritesService } from './favorites.service'; 
-import { ShoppingListService } from './shopping-list.service'; 
+import { FavoritesService } from './favorites.service';
+import { ShoppingListService } from './shopping-list.service';
 import {
   User,
   LoginRequest,
@@ -18,9 +18,7 @@ import {
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  
-  private favoriteService = inject(FavoritesService);
-  private shoppingService = inject(ShoppingListService);
+  private injector = inject(Injector);
 
   private apiUrl = `${environment.apiUrl}/auth`;
 
@@ -35,8 +33,10 @@ export class AuthService {
       tap((response) => {
         if (response.success && response.data) {
           this.setUser(response.data);
-          this.favoriteService.loadFavorites();
-          this.shoppingService.loadMyList();
+          runInInjectionContext(this.injector, () => {
+            inject(FavoritesService).loadFavorites();
+            inject(ShoppingListService).loadMyList();
+          });
         }
       })
     );
@@ -47,8 +47,10 @@ export class AuthService {
       tap((response) => {
         if (response.success && response.data) {
           this.setUser(response.data);
-          this.favoriteService.clearFavorites();
-          this.shoppingService.cartIngredients.set([]);
+          runInInjectionContext(this.injector, () => {
+            inject(FavoritesService).clearFavorites();
+            inject(ShoppingListService).cartIngredients.set([]);
+          });
         }
       })
     );
@@ -56,13 +58,13 @@ export class AuthService {
 
   logout(): void {
     localStorage.clear();
-    
     this.currentUserSignal.set(null);
-    this.favoriteService.clearFavorites(); 
-    this.shoppingService.cartIngredients.set([]); 
-    
+    runInInjectionContext(this.injector, () => {
+      inject(FavoritesService).clearFavorites();
+      inject(ShoppingListService).cartIngredients.set([]);
+    });
     this.router.navigate(['/login']);
-      }
+  }
 
   getProfile(): Observable<AuthResponse> {
     return this.http.get<AuthResponse>(`${this.apiUrl}/me`);
