@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
       required: [true, "Name is required"],
       trim: true,
       minlength: [2, "Name must be at least 2 characters"],
+      maxlength: [50, "Name must be at most 50 characters"],
     },
     email: {
       type: String,
@@ -27,8 +28,6 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// 🔐 Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
@@ -37,7 +36,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// 🔍 Compare passwords
+// Compare passwords
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

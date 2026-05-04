@@ -1,0 +1,34 @@
+<div class="page-header">
+  <h1>My Shopping List : </h1>
+  <p>{{ shoppingService.itemCount() }} items to buy</p>
+</div>
+
+<div class="shopping-container">
+  <div *ngIf="shoppingService.isEmpty()" class="empty-state">
+    <h2>📝 Your list is empty</h2>
+    <p>Browse recipes and add ingredients to your shopping list!</p>
+  </div>
+
+  <ng-container *ngIf="!shoppingService.isEmpty()">
+    <button (click)="clearAll()" class="clear-all-btn">
+      🗑️ Clear All Items
+    </button>
+
+    <ul class="shopping-items">
+      <li *ngFor="let item of shoppingService.cartIngredients()" class="shopping-item">
+        <div class="item-details">
+          <h3>{{ item.name }}</h3>
+          <p>
+            <strong>{{ item.amount }} {{ item.unit }}</strong>
+            <small *ngIf="item.unit === 'g' || item.unit === 'grams'">
+              ({{ item.amount | unitConvert: item.unit : 'oz' }})
+            </small>
+          </p>
+        </div>
+        <button (click)="removeItem(item)" class="remove-btn">
+          ❌
+        </button>
+      </li>
+    </ul>
+  </ng-container>
+</div>

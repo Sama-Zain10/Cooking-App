@@ -1,0 +1,41 @@
+<!-- navbar.html -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a routerLink="/home" class="logo">
+      <span>RecipeBook</span>
+    </a>
+
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/home" routerLinkActive="active" class="nav-link">🏠 Home</a>
+      </li>
+
+      <li *ngIf="isLoggedIn()">
+        <a routerLink="/favorites" routerLinkActive="active" class="nav-link">
+          ❤️ Favorites
+          <span class="badge" *ngIf="favCount() > 0">{{ favCount() }}</span>
+        </a>
+      </li>
+
+      <li *ngIf="isLoggedIn()">
+        <a routerLink="/shopping" routerLinkActive="active" class="nav-link cart-link">
+          🛒 Shopping
+          <span class="badge blue" *ngIf="cartCount() > 0">{{ cartCount() }}</span>
+        </a>
+      </li>
+
+      <li *ngIf="!isLoggedIn()">
+        <a routerLink="/login" class="nav-link auth-btn">🔑 Login</a>
+      </li>
+
+      <li *ngIf="!isLoggedIn()">
+        <a routerLink="/register" class="nav-link auth-btn signup">✨ Sign Up</a>
+      </li>
+
+      <li *ngIf="isLoggedIn()" class="user-menu">
+        <span class="user-name">{{ userName() }}</span>
+        <button (click)="logout()" class="logout-btn">🚪 Logout</button>
+      </li>
+    </ul>
+  </div>
+</nav>

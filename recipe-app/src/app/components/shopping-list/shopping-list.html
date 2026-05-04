@@ -1,0 +1,36 @@
+<div class="shopping-container" [class.open]="isOpen">
+  <!-- Navbar/Header Button -->
+  <button class="shopping-toggle" (click)="toggle()">
+    🛒 Shopping ({{ shoppingService.itemCount() }})
+  </button>
+
+  <!-- Dropdown Content -->
+  <div *ngIf="isOpen" class="shopping-content">
+    
+    <!-- Empty State -->
+    <div *ngIf="shoppingService.isEmpty()" class="empty-message">
+      Your list is empty. Add some ingredients!
+    </div>
+    
+    <!-- Ingredients List -->
+    <div *ngFor="let item of shoppingService.cartIngredients()" class="shopping-item">
+      <div class="item-info">
+        <span class="item-name">{{ item.name }}</span>
+        <span class="item-amount">{{ item.amount }} {{ item.unit }}</span>
+      </div>
+      
+      <button class="delete-btn" (click)="removeItem(item)" title="Remove item">
+        ❌
+      </button>
+    </div>
+
+    <!-- Clear All Button -->
+    <button 
+      *ngIf="!shoppingService.isEmpty()" 
+      class="clear-all-btn" 
+      (click)="clearList()">
+      Clear All
+    </button>
+    
+  </div>
+</div>

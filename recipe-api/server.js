@@ -8,7 +8,7 @@ import connectDB from "./src/config/db.js";
 // Routes
 import authRoutes from "./src/routes/auth.routes.js";
 import favoritesRoutes from "./src/routes/favorites.routes.js";
-import cartRoutes from "./src/routes/cart.routes.js";
+import shoppingRoutes from "./src/routes/shopping-list.routes.js";
 
 dotenv.config();
 
@@ -43,19 +43,12 @@ app.get("/", (req, res) => {
       auth: {
         register: "POST /api/auth/register",
         login: "POST /api/auth/login",
-        profile: "GET /api/auth/me",
       },
       favorites: {
         getAll: "GET /api/favorites",
         add: "POST /api/favorites",
         remove: "DELETE /api/favorites/:recipeId",
         clear: "DELETE /api/favorites",
-      },
-      cart: {
-        getAll: "GET /api/cart",
-        add: "POST /api/cart",
-        remove: "DELETE /api/cart/:id",
-        clear: "DELETE /api/cart",
       },
     },
   });
@@ -64,8 +57,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/favorites", favoritesRoutes);
-app.use("/api/cart", cartRoutes);
-
+app.use("/api/shopping", shoppingRoutes); 
 // 404
 app.use((req, res) => {
   res.status(404).json({
@@ -87,7 +79,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`\n🚀 Server running on http://localhost:${PORT}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`📅 ${new Date().toLocaleString()}\n`);
+  console.log(`\nServer running on http://localhost:${PORT}`);
+  console.log(` Environment: ${process.env.NODE_ENV || "development"}`);
 });

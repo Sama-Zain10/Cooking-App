@@ -1,0 +1,24 @@
+<div class="recipe-card" (click)="openDetails()">
+  <div class="image-wrapper">
+    <img 
+      [src]="recipe.image" 
+      [alt]="recipe.title"
+      [attr.title]="recipe.title"
+      title="Recipe Image"
+      loading="lazy"
+      class="recipe-image"
+    />
+    <button 
+      class="favorite-btn" 
+      (click)="addtoFavourites($event)"
+      [attr.title]="isFav ? 'Remove from favorites' : 'Add to favorites'">
+      {{ isFav ? '❤️' : '🤍' }}
+    </button>
+  </div>
+  <div class="recipe-info">
+    <h3>{{ recipe.title }}</h3>
+    <p class="prep-time" *ngIf="recipe.preptime">
+      ⏱️ {{ recipe.preptime }} min
+    </p>
+  </div>
+</div>

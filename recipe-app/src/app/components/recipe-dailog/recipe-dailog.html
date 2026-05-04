@@ -1,0 +1,35 @@
+<!-- recipe-details.html -->
+<div class="dialog-container" *ngIf="!loading && recipe">
+  <img 
+    [src]="recipe.image" 
+    [alt]="recipe.title"
+    [attr.title]="recipe.title"
+    title="Recipe Image"
+    class="hero-img" 
+    loading="lazy" 
+  />
+  <div class="content">
+    <h2>{{ recipe.title }}</h2>
+    <div class="meta">
+      <span>⏱️ {{ recipe.preptime }} min</span>
+    </div>
+    <h3>Ingredients</h3>
+    <ul class="ingredients">
+      <li *ngFor="let ing of recipe.ingredients">
+        <strong>{{ ing.amount }} {{ ing.unit }}</strong> {{ ing.name }}
+        <small *ngIf="ing.unit === 'g' || ing.unit === 'grams'">
+          ({{ ing.amount | unitConvert: ing.unit : 'oz' }})
+        </small>
+      </li>
+    </ul>
+    <div [innerHTML]="recipe.summary" class="summary"></div>
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="addIngredientsToList()">
+        🛒 Add to Shopping List
+      </button>
+      <button mat-button (click)="dialogRef.close()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading">Loading recipe...</div>

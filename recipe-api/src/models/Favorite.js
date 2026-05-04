@@ -19,18 +19,12 @@ const favoriteSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    readyInMinutes: {
-      type: Number,
-      default: 30,
-    },
   },
   {
     timestamps: true,
   }
 );
-
 // 🚫 Prevent duplicate favorites
 favoriteSchema.index({ userId: 1, recipeId: 1 }, { unique: true });
-
 const Favorite = mongoose.model("Favorite", favoriteSchema);
 export default Favorite;

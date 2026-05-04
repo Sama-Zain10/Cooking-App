@@ -1,0 +1,21 @@
+<!-- Search Component -->
+<app-search 
+  (resultsFound)="onResults($event)" 
+  (loading)="onLoading($event)">
+</app-search>
+<!-- Loading State -->
+<div *ngIf="loading" class="loader-container">
+  <p>Searching for delicious recipes...</p>
+</div>
+<div *ngIf="!loading && searchPerformed && uniqueRecipes().length === 0" class="no-results-container">
+  <div class="no-results-content">
+    <span class="search-icon">🔍</span>
+    <h3>No Recipes Found</h3>
+    <p>We couldn't find any recipes matching your search. Try keywords like "Chicken", "Pasta", or "Dessert".</p>
+  </div>
+</div>
+<app-recipe-grid 
+  *ngIf="!loading && uniqueRecipes().length > 0" 
+  [recipes]="uniqueRecipes()" 
+  [loading]="loading">
+</app-recipe-grid>

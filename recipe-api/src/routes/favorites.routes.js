@@ -1,23 +1,11 @@
-import express from "express";
-import {
-  getFavorites,
-  addFavorite,
-  removeFavorite,
-  clearFavorites,
-} from "../controllers/favorites.controller.js";
-import { protect } from "../middleware/auth.middleware.js";
+import express from 'express';
+import { protect } from '../middleware/auth.middleware.js';
+import { addToFavorites, getMyFavorites } from '../Services/favorites.service.js';
 
 const router = express.Router();
 
-// All routes are protected (need login)
-router.use(protect);
-
-router
-  .route("/")
-  .get(getFavorites)
-  .post(addFavorite)
-  .delete(clearFavorites);
-
-router.delete("/:recipeId", removeFavorite);
+router.route('/')
+  .get(protect, getMyFavorites)
+  .post(protect, addToFavorites);
 
 export default router;
